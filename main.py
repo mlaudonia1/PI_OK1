@@ -36,7 +36,7 @@ data_types = {
 
 
 
-votadas_df = pd.read_csv('c:\\Users\\maral\\Desktop\\PI MLOps\\votadas_df.csv', dtype=data_types, low_memory=False)
+votadas_df = pd.read_csv('votadas_df.csv', dtype=data_types, low_memory=False)
 
 
 # Crea una instancia de la aplicación
