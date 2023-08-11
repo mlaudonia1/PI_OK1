@@ -1,9 +1,7 @@
 
-
 from fastapi import FastAPI, HTTPException
 import pandas as pd
 import uvicorn
-from wordcloud import WordCloud, STOPWORDS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
@@ -191,8 +189,8 @@ def recommend_movies(title: str):
         # Codificación one-hot a genres_ok
         genre_encoded = encoder.fit_transform(votadas_df["genres_ok"].values.reshape(-1, 1)).toarray()
 
-        # Combina los vectores de títulos preprocesados con columnas 'vote_count' y género
-        features_combined = np.concatenate((vector_overview_preprocessed, vector_titles_titles_preprocessed, votadas_df['vote_count'].values.reshape(-1, 1), genre_encoded, btc_encoded), axis=1)
+        # Combina los vectores de títulos preprocesados con columnas belong to collection y género. Se quitan algunos dle moodelo original x memoria Render
+        features_combined = np.concatenate((vector_overview_preprocessed, genre_encoded, btc_encoded), axis=1)
 
         # Normalización de características si es necesario
         scaler = StandardScaler()
