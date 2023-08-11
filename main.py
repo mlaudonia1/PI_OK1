@@ -68,12 +68,6 @@ def peliculas_duracion(pelicula: str):
     }
 
 
-
-
-
-
-
-
 # Función para obtener información sobre una franquicia específica
 # se decidió utilizar la columna 'revenue' en lugar de 'return', ya que la columna 'return' es difícil de construir porque la mayoría de los datos son igual a 0.
 @app.get('/franquicia/{franquicia}')
@@ -94,6 +88,55 @@ def franquicia(franquicia: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Función para obtener la cantidad de películas producidas en un país específico
+
+# Un ejemplo simple de mapeo de palabras clave a nombres de países
+country_mapping = {
+    'United States':'United States of America',
+    'eeuu': 'United States of America',
+    'usa': 'United States of America',
+    'francia': 'France',
+    'Francia': 'France',
+    'alemania': 'Germany',
+    'Alemania': 'Germany',
+        'UK': 'United Kingdom',
+    # Agrega más mapeos aquí según tus necesidades
+}
+# Función para obtener cantidad de películas por país
+@app.get('/peliculas_pais/{pais}')
+def peliculas_pais(pais: str):
+    '''Se ingresa un país, retornando la cantidad de películas producidas en el mismo.'''
+    try:
+        # Busca en el mapeo de países y obtén el nombre completo del país
+        full_country_name = country_mapping.get(pais.lower(), pais)
+        
+        cantidad_peliculas = votadas_df[votadas_df['production_countries'].str.contains(full_country_name, case=False)].shape[0]
+        return {'pais': full_country_name, 'cantidad': cantidad_peliculas}
+    except Exception as e:
+        return {'error': 'Ocurrió un error al procesar la solicitud', 'detalle': str(e)}
+
+
+
+# Función para obtener el revenue total y la cantidad de películas de una productora específica
+@app.get('/productoras_exitosas/{productora}')
+def productoras_exitosas(productora: str):
+    '''Se ingresa una productora, entregando el revenue total y la cantidad de películas que realizó.'''
+    try:
+        productora_data = votadas_df[votadas_df['production_companies_ok'].str.contains(productora, case=False)]
+        if productora_data.empty:
+            return {'error': 'Productora no encontrada'}
+        
+        revenue_total = productora_data['revenue'].sum()
+        cantidad_peliculas = productora_data.shape[0]
+        
+        return {
+            'productora': productora,
+            'revenue_total': revenue_total,
+            'cantidad_peliculas': cantidad_peliculas
+        }
+    except Exception as e:
+        return {'error': 'Ocurrió un error al procesar la solicitud', 'detalle': str(e)}
         
 
 # Función para obtener información sobre un director específico y sus películas
@@ -120,52 +163,58 @@ def get_director(nombre_director: str):
         'retorno_total_director': retorno_total_director,
         'peliculas': peliculas_info
     }
+#Modelo de Recomendación de peliculas
 @app.get('/recommend_movies/{title}')
 def recommend_movies(title: str):
-#Preprocesamiento de datos
-    votadas_df["overview"].fillna(" ", inplace=True)
-    stopwords  = ['united', 'states', 'nan', "English","Film", "man", "boy", "girl", "woman", "United Kingdom"]
-    vectorizer_overview = TfidfVectorizer(stop_words='english')
-    vectorizer_overview.stop_words_ = vectorizer_overview.get_stop_words().union(stopwords)
-    overview_vectors = vectorizer_overview.fit_transform(votadas_df['overview'])
-    vector_overview_preprocessed = overview_vectors.toarray()
+    try:
+        # Preprocesamiento de datos
+        votadas_df["overview"].fillna(" ", inplace=True)
+        stopwords = ['united', 'states', 'nan', "English", "Film", "man", "boy", "girl", "woman", "United Kingdom"]
+        
+        vectorizer_overview = TfidfVectorizer(stop_words='english')
+        vectorizer_overview.stop_words_ = vectorizer_overview.get_stop_words().union(stopwords)
+        overview_vectors = vectorizer_overview.fit_transform(votadas_df['overview'])
+        vector_overview_preprocessed = overview_vectors.toarray()
 
-    vectorizer_title = TfidfVectorizer(stop_words='english')
-    vectorizer_title.stop_words_ = vectorizer_title.get_stop_words().union(stopwords)
-    title_vectors = vectorizer_title.fit_transform(votadas_df['title'])
-    vector_titles_titles_preprocessed = title_vectors.toarray()
+        vectorizer_title = TfidfVectorizer(stop_words='english')
+        vectorizer_title.stop_words_ = vectorizer_title.get_stop_words().union(stopwords)
+        title_vectors = vectorizer_title.fit_transform(votadas_df['title'])
+        vector_titles_titles_preprocessed = title_vectors.toarray()
 
-# Codificación one-hot del belong to collection
-    encoder = OneHotEncoder()
-    btc_encoded = encoder.fit_transform(votadas_df["belong_to_collection"].values.reshape(-1, 1)).toarray()
+        # Codificación one-hot del belong to collection
+        encoder = OneHotEncoder()
+        btc_encoded = encoder.fit_transform(votadas_df["belong_to_collection"].values.reshape(-1, 1)).toarray()
 
-# Codificación one-hot del género
-    genre_encoded = encoder.fit_transform(votadas_df["genres_ok"].values.reshape(-1, 1)).toarray()
+        # Codificación one-hot a genres_ok
+        genre_encoded = encoder.fit_transform(votadas_df["genres_ok"].values.reshape(-1, 1)).toarray()
 
-# Combina los vectores de títulos preprocesados con columnas 'vote_count' y género
-    features_combined = np.concatenate((vector_overview_preprocessed, vector_titles_titles_preprocessed, votadas_df['vote_count'].values.reshape(-1, 1), genre_encoded, btc_encoded), axis=1)
+        # Combina los vectores de títulos preprocesados con columnas 'vote_count' y género
+        features_combined = np.concatenate((vector_overview_preprocessed, vector_titles_titles_preprocessed, votadas_df['vote_count'].values.reshape(-1, 1), genre_encoded, btc_encoded), axis=1)
 
-# Normalización de características si es necesario
-    scaler = StandardScaler()
-    features_scaled = scaler.fit_transform(features_combined)
+        # Normalización de características si es necesario
+        scaler = StandardScaler()
+        features_scaled = scaler.fit_transform(features_combined)
 
-# Calcula la matriz de similitud del coseno entre las películas
-    similarity_matrix = cosine_similarity(features_scaled)
+        # Calcula la matriz de similitud del coseno entre las películas
+        similarity_matrix = cosine_similarity(features_scaled)
 
-# Obtener el índice de la película basado en el título
-    index = votadas_df[votadas_df["title"] == title].index[0]
+        # Obtener el índice de la película basado en el título
+        index = votadas_df[votadas_df["title"] == title].index[0]
 
-# Filtrar las películas similares por género apropiado para niños
-    filtered_similar_movies = [movie_index for movie_index in range(len(similarity_matrix[index])) if any(keyword in genre for keyword in ['Animation', 'Family'] for genre in votadas_df['genres_ok'].iloc[movie_index].split(','))]
+        # Filtrar las películas similares por género apropiado para niños
+        filtered_similar_movies = [movie_index for movie_index in range(len(similarity_matrix[index])) if any(keyword in genre for keyword in ['Animation', 'Family'] for genre in votadas_df['genres_ok'].iloc[movie_index].split(','))]
 
-# Calcular la similitud solo para las películas filtradas
-    filtered_similarity_scores = similarity_matrix[index][filtered_similar_movies]
+        # Calcular la similitud solo para las películas filtradas
+        filtered_similarity_scores = similarity_matrix[index][filtered_similar_movies]
 
-# Obtener las películas más recomendadas (excluyendo la película de referencia)
-    similar_movies = np.argsort(filtered_similarity_scores)[::-1][1:6]
-    top_movies = votadas_df.iloc[filtered_similar_movies[similar_movies]]['title'].tolist()
+        # Obtener las películas más recomendadas (excluyendo la película de referencia)
+        similar_movies = np.argsort(filtered_similarity_scores)[::-1][1:6]
+        top_movies = votadas_df.iloc[filtered_similar_movies[similar_movies]]['title'].tolist()
 
-    return top_movies
+        return top_movies
+    except Exception as e:
+        return {'error': 'Ocurrió un error al procesar la solicitud', 'detalle': str(e)}@app.get('/recommend_movies/{title}')
+
 
 if __name__ == "__main__":
     import uvicorn
