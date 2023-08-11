@@ -217,8 +217,10 @@ def recommend_movies(title: str):
         # Crear una lista de títulos de películas similares
         similar_movie_titles = [votadas_df['title'].iloc[filtered_similar_movies[movie_index]] for movie_index in similar_movies]
 
-
-        return similar_movie_titles
+        # Convertir la lista de títulos en una cadena separada por comas
+        similar_movie_titles_string = ', '.join(similar_movie_titles)
+        
+        return similar_movie_titles_string
     except Exception as e:
         return {'error': 'Ocurrió un error al procesar la solicitud', 'detalle': str(e)}@app.get('/recommend_movies/{title}')
 
