@@ -213,8 +213,12 @@ def recommend_movies(title: str):
         # Obtener las películas más recomendadas (excluyendo la película de referencia)
         similar_movies = np.argsort(filtered_similarity_scores)[::-1][1:6]
         top_movies = votadas_df.iloc[filtered_similar_movies[similar_movies]]['title'].tolist()
+        
+        # Crear una lista de títulos de películas similares
+        similar_movie_titles = [votadas_df['title'].iloc[filtered_similar_movies[movie_index]] for movie_index in similar_movies]
 
-        return top_movies
+
+        return similar_movie_titles
     except Exception as e:
         return {'error': 'Ocurrió un error al procesar la solicitud', 'detalle': str(e)}@app.get('/recommend_movies/{title}')
 
