@@ -85,11 +85,11 @@ Se propuso disponibilizar los datos con el framework de FastApi y crear 6 funcio
 4- Link de render para visualizar de los pedidos del cliente y la recomendacón de 5 películas más similares, sobre la base de un título de una película  😏                               
 https://pi-deploy-ok1.onrender.com/docs 
 
-🖕 :fu:**ojo!** Al cierre del deadline para el desafío PI, algunas funciones dan error en el deploy, ver PruebaFuncionesApi y PI_EDA_Modelo_Recomendación, para obtener datos solicitados. Chequeo de erroes en el Deploy en elabboración 
+🖕 :fu:**ojo!** Al cierre del deadline para el desafío PI, algunas funciones dan error en el deploy, ver PruebaFuncionesApi y PI_EDA_Modelo_Recomendación, para obtener datos solicitados. Chequeo de erroes en el Deploy en elabboración. Se agradece un feedback para solucionar el problema. Gracias! 
 
 5- Link al video explicativo del proyecto individual
 
-😊 :blush:
+😊 :blush:.
 🖕 :fu:
 
 ## Recursos y estructura del proyecto

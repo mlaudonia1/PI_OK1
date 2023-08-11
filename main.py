@@ -138,8 +138,8 @@ def productoras_exitosas(productora: str):
         
 
 # Función para obtener información sobre un director específico y sus películas
-@app.get('/get_director/{nombre_director}')
-def get_director(nombre_director: str):
+#@app.get('/get_director/{nombre_director}') #En elaboración
+#def get_director(nombre_director: str):
     '''Se ingresa el nombre de un director que se encuentre dentro de un dataset, debiendo devolver el éxito del mismo medido a través del retorno. 
     Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma. En formato lista.'''
     director_data = votadas_df[votadas_df['director'] == nombre_director]
