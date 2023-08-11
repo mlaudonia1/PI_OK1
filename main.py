@@ -3,11 +3,14 @@
 from fastapi import FastAPI, HTTPException
 import pandas as pd
 import uvicorn
+from wordcloud import WordCloud, STOPWORDS
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
+
+
 
 # Cargar datos en el DataFrame (supongamos que ya lo tienes cargado)
 
