@@ -20,7 +20,7 @@ data_types = {
     'popularity': str,
     
     'revenue': float,
-    'runtime': int,
+    'runtime': float,
     'status': str,
     'tagline': str,
     'title': str,
@@ -55,18 +55,17 @@ def peliculas_idioma(idioma: str):
 @app.get('/peliculas_duracion/{pelicula}')
 def peliculas_duracion(pelicula: str):
     '''Ingresas la película, retornando la duración y el año'''
-    pelicula_data = votadas_df[votadas_df['title'] == pelicula]
+    pelicula_data = votadas_df[votadas_df.title == pelicula]
     if pelicula_data.empty:
         return {'error': 'Película no encontrada'}
     else:
         
-        duracion = pelicula_data['runtime'].iloc[0]
-        anio = pelicula_data['release_year'].iloc[0]
+        duracion = pelicula_data.runtime[0]
+        anio = pelicula_data.release_year[0]
 
      
 
-        return {'pelicula': pelicula, 'duracion': duracion, 'anio': anio
-    }
+        return {'pelicula': pelicula, 'duracion': duracion, 'anio': anio}
 
 
 # Función para obtener información sobre una franquicia específica
