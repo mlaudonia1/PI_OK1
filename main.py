@@ -20,7 +20,7 @@ data_types = {
     'popularity': str,
     
     'revenue': float,
-    'runtime': float,
+    'runtime': int,
     'status': str,
     'tagline': str,
     'title': str,
@@ -32,7 +32,7 @@ data_types = {
     'belong_to_collection': str,
     'production_companies_ok': str,
     'return': float,
-    'release_year': 'Int64'  # Utiliza 'Int64' para un entero nullable
+    'release_year': int  # Utiliza 'Int64' para un entero nullable
 }
 
 
