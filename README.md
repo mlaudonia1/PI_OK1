@@ -16,27 +16,13 @@ En cuanto a los recursos, se dispone de dos datasets, movies.cvs y credits.cvs, 
 ### Paquetes necesarios
 
 -El trabajo fue íntegramente realizado utilizando PYTHON y sus librerías y para el deploy se eligió Render
-- pandas
-- numpy
-- random
-- matplotlib
+- Los paquetes necesarios se encuentran en requirements.txt
 
+### Instrucciones para correr los archivos
 
-### Instrucciones para correr el programa
+Para correr con **Jupyter notebook**
 
-1.- Instalar paqueterías de python que se encuentran en el requirements.txt
-
-`pip install -r requirements.txt`
-
-2.- Colocar al mismo nivel de ejecución del notebook y de los .py, los .csv a analizar:
-
-- links_small.csv
-- ratings_small.csv
-- movies_metadata.csv
-
-Para correr con **jupyter notebook**
-
-1.- Abrir el notebook **PI4.ipynb** y ejecutar cada celda 💪 . 
+1.- Abrir el Script_ETL.py y ejecutarlo en Jupyter 💪 . 
 
 En el notebook se encontrarán las siguientes acciones :
 
@@ -84,15 +70,22 @@ Se propuso disponibilizar los datos con el framework de FastApi y crear 6 funcio
 + def **get_director( *`nombre_director`* )**:
     Se ingresa el nombre de un director que se encuentre dentro de un dataset debiendo devolver el éxito del mismo medido a través del retorno. Además, deberá devolver el nombre de cada película con la fecha de lanzamiento, retorno individual, costo y ganancia de la misma, en formato lista.
 
-3- .Abrir el notebook **sistema_recomendacion.ipynb** y ejecutar cada celda.  
+  Por ultimo, se agregó el modelo de recomendación a la api, en base a estos criterios:
+  
++ def recomendacion( titulo ): Se ingresa el nombre de una película y te recomienda las similares en una lista de 5 valores.
+
+3- .Abrir el notebook **PI_EDA_Mdelo_Recomendacion.ipynb** y ejecutar cada celda.  
 
 -Se carga votadas_df y se realiza un EDA de los datos.
 -Se decide implementar el método de similitud de coseno
 -Para los inputs del modelo, se realizan nube de palabras a  los campos overview y titulos, 
- -Se crea inicialmente un modelo que contempla las variables overview, title, genres_ok. y belong_to_collecion, de las 500 películas más votadas
--
+-Se crea un modelo de recomendación de películas que contempla las variables overview, title, genres_ok. y belong_to_collecion, de las 5000 películas más votadas
 
-4- Link de render para visualizar la recomendación de las 5 películas más similares, sobre la base de un título de una película  😏                                                   
+
+4- Link de render para visualizar de los pedidos del cliente y la recomendacón de 5 películas más similares, sobre la base de un título de una película  😏                               
+https://pi-deploy-ok1.onrender.com/docs 
+
+🖕 :fu:**ojo!** Al cierre del deadline para el desafío PI, algunas funciones dan error en el deploy, ver PruebaFuncionesApi y PI_EDA_Modelo_Recomendación, para obtener datos solicitados. Chequeo de erroes en el Deploy en elabboración 
 
 5- Link al video explicativo del proyecto individual
 
@@ -104,14 +97,12 @@ Se propuso disponibilizar los datos con el framework de FastApi y crear 6 funcio
 | Nombre archivo | Contenido|
 |----------------|----------|
 | **Diccionario de Datos - Movies.xlsx** | Recurso-Diccionario de datos, con los nombres de los campos y la descripción de los mismos |
-| **movies.csv** | Recurso -archivo para limpieza de datos |
+| **movies_dataset1.csv** | Recurso -archivo para limpieza de datos |
 | **credits.csvx** | Recurso-archivo para limpieza de datos  |
-|**movie_etl.csvx** | Recurso-archivo con datos limpios para el realizar el  EDA  
-| **votadas_df.csv** | base de datos para crear el modelo de ML con una reducción a 5000 registros |
-|  |   |
+|**movie_etl.csv** | Recurso-archivo con datos limpios para el realizar el  EDA  
+| **votadas_df.csv** | base de datos para crear el modelo de ML con una reducción a 5000 registros para realizar el deploy en Render |
+| **Scrpit_ETL_PI.py** | Script del proceso completo de ETL. Se decidió este formato y no jupiter ya que github soporta archivos hasta 100 mb  |
 | **requirements.txt** | Paquetes utilizados |
-| **main.py** |  Ejecución de de API |
- **sistema_recomendacion.ipynb** | Jupyter notebook de ejecución para entrenar, predecir, y realizar la recomendación |
+| **main.py** | Script de ejecución de de API |
+| **PI_EDA_Modelo_ecomendación.ipynb** | Jupyter notebook de ejecución para entrenar, predecir, y realizar la recomendación |
 
-# PI_Henry_MLOps
-# PI_Henry_MLOps
