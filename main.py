@@ -52,21 +52,19 @@ def peliculas_idioma(idioma: str):
     return {'idioma': idioma, 'cantidad': cantidad_peliculas}
 
 # Función para obtener la duración y el año de una película específica
+
 @app.get('/peliculas_duracion/{pelicula}')
 def peliculas_duracion(pelicula: str):
-    '''Ingresas la película, retornando la duración y el año'''
-    pelicula_data = votadas_df[votadas_df.title == pelicula]
+    '''Ingresa el título de la película y obtén la duración y el año de lanzamiento'''
+    pelicula_data = votadas_df[votadas_df['title'] == pelicula]
+    
     if pelicula_data.empty:
         return {'error': 'Película no encontrada'}
-    else:
-        
-        duracion = pelicula_data.runtime[0]
-        anio = pelicula_data.release_year[0]
+    
+    duracion = pelicula_data['runtime'].iloc[0]
+    anio = pelicula_data['release_year'].iloc[0]
 
-     
-
-        return {'pelicula': pelicula, 'duracion': duracion, 'anio': anio}
-
+    return {'pelicula': pelicula, 'duracion': duracion, 'anio': anio}
 
 # Función para obtener información sobre una franquicia específica
 # se decidió utilizar la columna 'revenue' en lugar de 'return', ya que la columna 'return' es difícil de construir porque la mayoría de los datos son igual a 0.
